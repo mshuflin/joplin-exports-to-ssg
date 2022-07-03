@@ -27,6 +27,12 @@ export default class JoplinSettings {
      * The setting value however will be preserved from one launch to the next so there is no risk that it will be lost even if for some
      * reason the plugin fails to start at some point.
      */
+     registerSettings(settings: Record<string, SettingItem>): Promise<void>;
+     /**
+      * @deprecated Use joplin.settings.registerSettings()
+      *
+      * Registers a new setting.
+      */ 
     registerSetting(key: string, settingItem: SettingItem): Promise<void>;
     /**
      * Registers a new setting section. Like for registerSetting, it is dynamic and needs to be done every time the plugin starts.

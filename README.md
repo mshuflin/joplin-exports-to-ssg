@@ -1,3 +1,15 @@
+# Branch of Zicong
+
+This joplin plugin was forked from [joplin-exports-to-ssg](https://github.com/aman-d-1-n-only/joplin-exports-to-ssg), then added new features when export to jekyll.
+## New features
+1. export ssg type and root path of ssg are get from settings, not every time export.
+2. tile, tags, and time are auto-added into the frontmatters.
+3. When export to Jekyll, all of the note under the folders and it sub-folders and sub-sub-folders and sub-sub-sub...folders can all be export.
+4. When export to Jekyll, the note with tags "settings" will write to dist descibed by the first line of the note, while the firstline will delet when writing.
+5. When export to Jekyll, the note with tags "pages" will write as page, the distpath are no longer "_posts" but the path of notebooks.
+
+# Other Infomation are the same as in [joplin-exports-to-ssg](https://github.com/aman-d-1-n-only/joplin-exports-to-ssg), fellows are their README. Read it First.
+
 # Joplin Exports-To-SSG Plugin
 
 This is a joplin plugin that exports collection of notes from [Joplin](https://joplinapp.org/) as markdown file along with their static files[ images , pdfs etc] to static site generator(ssg) project.

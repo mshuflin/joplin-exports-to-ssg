@@ -2,7 +2,7 @@
 	"manifest_version": 1,
 	"id": "com.export-to-ssg.xczics",
 	"app_min_version": "1.7",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"name": "Export To SSG",
 	"description": "Export a collection of notes to static site generator project.",
 	"author": "xczics",

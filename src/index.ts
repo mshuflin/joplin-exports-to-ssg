@@ -6,9 +6,10 @@ const fs = (joplin as any).require('fs-extra');
 const path = require('path');
 
 //---------creates title for note as required in jekyll
-function titleCreator( title : string ) {
-	let today = new Date();
-	let fPart = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + '-';
+function titleCreator( note ) {
+	let title=note.title;
+	let day = new Date(note.created_time);
+	let fPart = day.getFullYear() + '-' + (day.getMonth() + 1) + '-' + day.getDate() + '-';
 	let sPart = title.split(' ').join('-');
 	return (fPart + sPart);
 };
@@ -28,7 +29,7 @@ async function wrapper_note(note,AdditionalfrontMatter:string){
 		if (tagitems.items[i].title === 'page' || tagitems.items[i].title === 'post') {
 			continue;
 		}
-		taglist += tagitems.items[i].title + ',';
+		taglist += '\n- '+tagitems.items[i].title;
 	}
 	let create_time=new Date(note.created_time);
 	let update_time=new Date(note.updated_time);
@@ -290,17 +291,16 @@ joplin.plugins.register({
 							//alert("Pages"+note.id);
 							//alert(filteredNotes.length);
 							const layout = 'page';
-							let taglist='[';
+							let taglist='';
 							notes2tags[note.id].forEach(tag => {
 								if (tag===SettingTag) {}
 								else if (tag===PageTag) {}
 								else if (tag===PostTag) {}
 								else{
-									taglist+=`"${tag}",`;
+									taglist+=`"\n- ${tag}"`;
 								}	
 							}
 							);
-							taglist+=']';
 							let create_time=new Date(note.created_time);
 							let update_time=new Date(note.updated_time);
 							let SubDist='';
@@ -312,7 +312,9 @@ joplin.plugins.register({
 							frontmatter += `title: ${note.title}\n`;
 							frontmatter += `date: ${create_time.toISOString()}\n`;
 							frontmatter += `last_modified_at: ${update_time.toISOString()}\n`;
+							if(taglist!=''){
 							frontmatter += `tags: ${taglist}\n`;
+							}
 							frontmatter +=AdditionalfrontMatter;
 							frontmatter += `---\n`;
 							note.body=frontmatter+note.body;
@@ -323,13 +325,13 @@ joplin.plugins.register({
 							else{
 							// wrapper_note
 							const layout = 'post';
-							let taglist='[';
+							let taglist='';
 							notes2tags[note.id].forEach(tag => {
 								if (tag===SettingTag) {}
 								else if (tag===PageTag) {}
 								else if (tag===PostTag) {}
 								else{
-									taglist+=`"${tag}",`;
+									taglist+=`\n- ${tag}`;
 								}	
 							}
 							);
@@ -337,10 +339,9 @@ joplin.plugins.register({
 								if (folder_id===args[0]) {
 								}else{
 								const folder = id2folders[folder_id];
-								taglist+=`"${folder.title}",`;}
+								taglist+=`\n- ${folder.title}`;}
 							}
 							);
-							taglist+=']';
 							let create_time=new Date(note.created_time);
 							let update_time=new Date(note.updated_time);
 							let frontmatter = `---\n`;
@@ -348,13 +349,15 @@ joplin.plugins.register({
 							frontmatter += `title: ${note.title}\n`;
 							frontmatter += `date: ${create_time.toISOString()}\n`;
 							frontmatter += `last_modified_at: ${update_time.toISOString()}\n`;
+							if (taglist !== '') {
 							frontmatter += `tags: ${taglist}\n`;
+					}
 							frontmatter +=AdditionalfrontMatter;
 							frontmatter += `---\n`;
 							note.body=frontmatter+note.body;
 							//await wrapper_note(note, AdditionalfrontMatter);
-							note.title = titleCreator(note.title);
-							fs.writeFile(path.join(dest_Path , '_posts' , `${note.id}.md`), note.body);
+							let filetitle = titleCreator(note);
+							fs.writeFile(path.join(dest_Path , '_posts' , `${filetitle}.md`), note.body);
 							}
 						};
 					});

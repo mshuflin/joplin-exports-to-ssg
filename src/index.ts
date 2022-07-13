@@ -63,6 +63,17 @@ async function resourceFetcher(note, resourceDir: string, destPath: string , ssg
 		}
 	};
 };
+async function JekyllresourceFetcher(note, resourceDir: string, destPath: string , Resourcesurl:string) {
+	const { items } = await joplin.data.get(['notes', note.id, 'resources'] , { fields: ['id', 'title', 'file_extension']} );
+	for( var i = 0; i < items.length; i++ ) {
+		const resource = items[i];
+		const ext = resource.file_extension;
+		const srcPath = path.join(resourceDir, `${resource.id}.${ext}`);
+		const dest_Path = path.join(destPath, resource.title)
+		await fs.copy(srcPath, dest_Path);
+			note.body = note.body.replace( `:/${resource.id}`, path.join(Resourcesurl, `${resource.title}`));
+	};
+};
 function firstline(body:string){
 	let firstline=body.split('\n')[0];
 	return firstline;
@@ -145,6 +156,13 @@ joplin.plugins.register({
 				type: SettingItemType.String,
 				label: 'Output paths',
 				value:'DefaultJekyllOutputPath',
+			},
+			'JekyllResourcesRootPath': {
+				public: true,
+				section: 'Jekyll output Settings',
+				type: SettingItemType.String,
+				label: 'url of Resources folder',
+				value:'JekyllResourcesRootPath',
 			}
 		});
 		/*******************Exporting Code*******************/
@@ -154,6 +172,7 @@ joplin.plugins.register({
 				//---------prequesite variables
 				let export_ssg_type = await joplin.settings.value('SSGType');
 				let exportDir=await joplin.settings.value('DefaultJekyllOutputPath');
+				let resourceURL=await joplin.settings.value('JekyllResourcesRootPath');
 				//alert(exportDir);
 				//alert(export_ssg_type);
 				let ssg = export_ssg_type;
@@ -280,7 +299,7 @@ joplin.plugins.register({
 						//alert(filteredNotes.length);
 						for(var i = 0; i < filteredNotes.length; i++) {
 							const note = filteredNotes[i];
-							await resourceFetcher( note , resourceDir , resourceDestPath , ssg  );
+							await JekyllresourceFetcher( note , resourceDir , resourceDestPath ,resourceURL  );
 							if (notes2tags[note.id].includes(SettingTag)) {
 								//alert("Settings"+note.id);
 								let first=firstline(note.body)

@@ -169,17 +169,19 @@ joplin.plugins.register({
 		await joplin.commands.register({
             name: 'exportingProcedure',
 			execute: async (...args) => {
+				console.info("exportingProcedure");
 				//---------prequesite variables
 				let export_ssg_type = await joplin.settings.value('SSGType');
 				let exportDir=await joplin.settings.value('DefaultJekyllOutputPath');
 				let resourceURL=await joplin.settings.value('JekyllResourcesRootPath');
-				//alert(exportDir);
-				//alert(export_ssg_type);
+				console.info("export dir: ", exportDir);
+				alert(exportDir);
+				alert(export_ssg_type);
 				let ssg = export_ssg_type;
 				let dest_Path = exportDir;
 				let AdditionalfrontMatter = args[1].basic_info.frontMatter;
 				if (ssg === 'hugo' || ssg === 'gatsby') {
-					const basketFolder = await joplin.data.get(['folders', args[0]], { fields: ['id', 'title', 'body'] });
+					const basketFolder = await joplin.data.get(['folders', args[0]], { fields: ['id', 'title'] });
 					const { items } = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'] });
 					const filteredNotes = items.filter( note => {
 						return (note.parent_id === args[0]);
@@ -220,17 +222,17 @@ joplin.plugins.register({
 					}
 				}
 				else if (ssg === 'jekyll') {
-					//alert("jkeyll!");
+					console.info("jkeyll!");
 					//---------handle exporting into jekyll
 					// 获取所有笔记
 					var { items } = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'] });
-					//alert(JSON.stringify(items));
+					console.info(JSON.stringify(items));
 					const notes=items;
 					// 获取所有文件夹
 					var { items }  = await joplin.data.get(['folders'], { fields: ['id', 'title', 'parent_id'] });
 					const folders=items;
 					let foldersJsonString=JSON.stringify(folders);
-					//alert(foldersJsonString);
+					console.info(foldersJsonString);
 					// 获取所有相关联的文件夹
 					// id2folders
 					const id2folders = {};
@@ -238,7 +240,7 @@ joplin.plugins.register({
 						id2folders[folder.id] = folder;
 					}
 					);
-					//alert(JSON.stringify(id2folders));
+					console.info(JSON.stringify(id2folders));
 					// FolderParentsTable
 					const FolderParentsTable = {};
 					folders.forEach(folder => {
@@ -296,7 +298,7 @@ joplin.plugins.register({
 						await fs.mkdirp(path.join(dest_Path, 'resources'));//static files
 
 						const resourceDestPath = (path.join(dest_Path , 'resources'));
-						//alert(filteredNotes.length);
+						console.info("filteredNotes.length: ",filteredNotes.length);
 						for(var i = 0; i < filteredNotes.length; i++) {
 							const note = filteredNotes[i];
 							await JekyllresourceFetcher( note , resourceDir , resourceDestPath ,resourceURL  );
@@ -391,6 +393,7 @@ joplin.plugins.register({
             name: 'staticSiteExporterDialog',
             label: 'Export to SSG',
             execute: async (folderId: string) => {
+				console.info("folderId: ",folderId);
 				const { id, formData } = await dialogs.open(ssg_dialog);
 				if (id == "submit") {
                     await joplin.commands.execute('exportingProcedure', folderId , formData);

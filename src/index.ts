@@ -163,29 +163,43 @@ joplin.plugins.register({
 				type: SettingItemType.String,
 				label: 'url of Resources folder',
 				value:'JekyllResourcesRootPath',
+			},
+			'SSGtag': {
+				public: true,
+				section: 'Jekyll output Settings',
+				type: SettingItemType.String,
+				label: 'Tag to identify blog posts',
+				value:'blog',
 			}
 		});
 		/*******************Exporting Code*******************/
 		await joplin.commands.register({
             name: 'exportingProcedure',
 			execute: async (...args) => {
-				console.info("exportingProcedure");
+				console.info("exportingProcedure", args);
 				//---------prequesite variables
 				let export_ssg_type = await joplin.settings.value('SSGType');
 				let exportDir=await joplin.settings.value('DefaultJekyllOutputPath');
 				let resourceURL=await joplin.settings.value('JekyllResourcesRootPath');
+				let SSGtag=await joplin.settings.value('SSGtag');
+
 				console.info("export dir: ", exportDir);
-				alert(exportDir);
-				alert(export_ssg_type);
+				console.info("export ssg type: ", export_ssg_type);
+				console.info("resource url: ", resourceURL);
+				// alert(exportDir);
+				// alert(export_ssg_type);
 				let ssg = export_ssg_type;
 				let dest_Path = exportDir;
 				let AdditionalfrontMatter = args[1].basic_info.frontMatter;
 				if (ssg === 'hugo' || ssg === 'gatsby') {
 					const basketFolder = await joplin.data.get(['folders', args[0]], { fields: ['id', 'title'] });
-					const { items } = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'] });
-					const filteredNotes = items.filter( note => {
-						return (note.parent_id === args[0]);
-					});
+					// const { items } = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'] });
+					var { items } = await joplin.data.get(['search'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'], query:"tag:" + SSGtag });
+					console.info("items: ", items);
+					const filteredNotes = items;
+					// const filteredNotes = items.filter( note => {
+					// 	return (note.parent_id === args[0]);
+					// });
 
 					if (ssg === 'hugo') {
 						//---------handle exporting into hugo
@@ -225,14 +239,15 @@ joplin.plugins.register({
 					console.info("jkeyll!");
 					//---------handle exporting into jekyll
 					// 获取所有笔记
-					var { items } = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'] });
-					console.info(JSON.stringify(items));
+					var { items } = await joplin.data.get(['search'], { fields: ['id', 'title', 'body', 'parent_id','created_time','updated_time'], query:"tag:" + SSGtag });
 					const notes=items;
+					console.info("items(notes:)",notes);
+					
 					// 获取所有文件夹
 					var { items }  = await joplin.data.get(['folders'], { fields: ['id', 'title', 'parent_id'] });
 					const folders=items;
 					let foldersJsonString=JSON.stringify(folders);
-					console.info(foldersJsonString);
+					console.info("folders:", folders);
 					// 获取所有相关联的文件夹
 					// id2folders
 					const id2folders = {};
@@ -240,7 +255,7 @@ joplin.plugins.register({
 						id2folders[folder.id] = folder;
 					}
 					);
-					console.info(JSON.stringify(id2folders));
+					// console.info(JSON.stringify(id2folders));
 					// FolderParentsTable
 					const FolderParentsTable = {};
 					folders.forEach(folder => {
@@ -253,7 +268,7 @@ joplin.plugins.register({
 						FolderParentsTable[folder.id]=FolderParentsTable[folder.id].filter(item=>(item!==undefined && item!==null && item!==''));
 					}
 					);
-					//alert(JSON.stringify(FolderParentsTable));
+					console.log("FoldersParentsTable: ",FolderParentsTable);
 					// 获取所有笔记的父文件夹
 					const note2folders = {};
 					notes.forEach(note => {
@@ -268,12 +283,21 @@ joplin.plugins.register({
 						}
 					} 
 					);
-					//alert("note2folders"+JSON.stringify(note2folders));
+					console.log("note2folders", note2folders);
+					console.log(" args0 ",args[0]);
+					console.log()
+					console.log("notes",notes);
 					// All notes relative to folder with id = args[0]
-					const filteredNotes = notes.filter( note => {
-						return (note2folders[note.id].includes(args[0]));
-					}
-					);
+					// const filteredNotes = notes.filter( note => {
+					// 	return (note2folders[note.id].includes(args[0]));
+					// }
+					// );
+					const filteredNotes = notes
+					// .filter( note => {
+					// 	console.log("note.parent_id",note.parent_id, args[0],note.parent_id == args[0],note.parent_id === args[0], note.id, note.title);
+
+					// 	return (note.parent_id === args[0]);
+					// });
 					//alert("filteredNotes"+JSON.stringify(filteredNotes));
 					//notes2tags
 					const notes2tags = {};

@@ -2,7 +2,7 @@
 
 This joplin plugin is a fork of [joplin-exports-to-ssg](https://github.com/xczics/joplin-exports-to-ssg), which is a fork of [joplin-exports-to-ssg](https://github.com/aman-d-1-n-only/joplin-exports-to-ssg).
 
-Both other versions had a bug that only considered the first 100 notes for export. This may have lead to no exported notes at all. This version changes the behavior: Instead of some sub-notes of a notebook, it exports all notes with the tag "blog" (configurable).
+Both other versions had a bug that only considered the first 100 notes for export. This may have lead to no exported notes at all. This version changes the behavior: Instead of some sub-notes of a notebook, it exports all notes with the tag "blog" (configurable in the settings).
 
 ### New features from the xczics-fork:
 1. export ssg type and root path of ssg are get from settings, not every time export.

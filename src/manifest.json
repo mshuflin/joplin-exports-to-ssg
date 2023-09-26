@@ -1,12 +1,12 @@
 {
 	"manifest_version": 1,
-	"id": "com.export-to-ssg.xczicsTT",
+	"id": "com.export-to-ssg.tomthe",
 	"app_min_version": "1.7",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"name": "Export To SSG-TT",
 	"description": "Export a collection of notes to static site generator project.",
-	"author": "xczicsTT",
-	"homepage_url": "https://github.com/xczics/joplin-exports-to-ssg#readme",
-	"repository_url": "https://github.com/xczics/joplin-exports-to-ssg.git",
+	"author": "xczics, tomthe",
+	"homepage_url": "https://github.com/tomthe/joplin-exports-to-ssg#readme",
+	"repository_url": "https://github.com/tomthe/joplin-exports-to-ssg.git",
 	"keywords": []
 }

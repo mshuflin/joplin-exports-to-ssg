@@ -1,7 +1,10 @@
-# Branch of Zicong
+# Fork of a fork
 
-This joplin plugin was forked from [joplin-exports-to-ssg](https://github.com/aman-d-1-n-only/joplin-exports-to-ssg), then added new features when export to jekyll.
-## New features
+This joplin plugin is a fork of [joplin-exports-to-ssg](https://github.com/xczics/joplin-exports-to-ssg), which is a fork of [joplin-exports-to-ssg](https://github.com/aman-d-1-n-only/joplin-exports-to-ssg).
+
+Both other versions had a bug that only considered the first 100 notes for export. This may have lead to no exported notes at all. This version changes the behavior: Instead of some sub-notes of a notebook, it exports all notes with the tag "blog" (configurable).
+
+### New features from the xczics-fork:
 1. export ssg type and root path of ssg are get from settings, not every time export.
 2. tile, tags, and time are auto-added into the frontmatters.
 3. When export to Jekyll, all of the note under the folders and it sub-folders and sub-sub-folders and sub-sub-sub...folders can all be export.

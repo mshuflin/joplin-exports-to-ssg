@@ -24,7 +24,7 @@ async function wrapper_note(note,AdditionalfrontMatter:string){
 			layout = 'page';
 		}
 	}
-	let taglist = '[';
+	let taglist = 
 	for( var i = 0; i < tagitems.items.length; i++ ) {
 		if (tagitems.items[i].title === 'page' || tagitems.items[i].title === 'post') {
 			continue;
@@ -33,7 +33,6 @@ async function wrapper_note(note,AdditionalfrontMatter:string){
 	}
 	let create_time=new Date(note.created_time);
 	let update_time=new Date(note.updated_time);
-	taglist+=']';
 	let frontmatter = `---\n`;
 	frontmatter += `layout: ${layout}\n`;
 	frontmatter += `title: ${note.title}\n`;
